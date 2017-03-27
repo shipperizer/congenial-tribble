@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  server:
+    image: shipperizer/congenial-tribble:latest
+    build: .
+    command: make server
+    restart: always
+    volumes:
+      - ./server/cert.pem:/tmp/server/cert.pem
+      - ./server/key.pem:/tmp/server/key.pem
+
+  client:
+    image: shipperizer/congenial-tribble:latest
+    build: .
+    command: make client
+    environment:
+      - SERVER_HOST=server
+    depends_on:
+      - server
+    links:
+      - server:server
+    restart: always
+    volumes:
+      - ./client/cert.pem:/tmp/client/cert.pem
+      - ./client/key.pem:/tmp/client/key.pem
